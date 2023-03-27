@@ -3,15 +3,18 @@ from base64 import b64decode,b64encode
 from hashlib import md5,sha256,sha1
 import requests
 from random import randint
+from faker import Faker
+import json
+
 
 #rewrite this whole thing to be more user friendly for example make it so that it will work like: HackMate MD5 "string" or HackMate MD5 -f "path to file" etc..
 def asciiart():
     i=randint(0,2)
     if i==0:
-        print(" _   _            _     ___  ___      _\n| | | |          | |    |  \/  |     | |\n| |_| | __ _  ___| | __ | .  . | __ _| |_ ___ \n|  _  |/ _` |/ __| |/ / | |\/| |/ _` | __/ _ \n| | | | (_| | (__|   <  | |  | | (_| | ||  __/\n\_| |_/\__,_|\___|_|\_\ \_|  |_/\__,_|\__\___|")
+        print(" _   _            _     ___  ___      _\n| | | |          | |    |  \/  |     | |\n| |_| | __ _  ___| | __ | .  . | __ _| |_ ___ \n|  _  |/ _` |/ __| |/ / | |\/| |/ _` | __/ _ \n| | | | (_| | (__|   <  | |  | | (_| | ||  __/\n\_| |_/\__,_|\___|_|\_\ \_|  |_/\__,_|\__\___|\n")
     elif i==1:
         print('''
-        _  _   __    ___  __ _    _  _   __  ____  ____ 
+         _  _   __    ___  __ _    _  _   __  ____  ____ 
         / )( \ / _\  / __)(  / )  ( \/ ) / _\(_  _)(  __)
         ) __ (/    \( (__  )  (   / \/ \/    \ )(   ) _) 
         \_)(_/\_/\_/ \___)(__\_)  \_)(_/\_/\_/(__) (____)
@@ -31,7 +34,7 @@ def asciiart():
                                                                           
 def menu():
     asciiart()
-    print("1. Caesar cipher\n2. Vigenere cipher\n3. Entropy calculator\n4. Base64\n5. Hash\n6. Exit")
+    print("1. Caesar cipher\n2. Vigenere cipher\n3. Entropy calculator\n4. Base64\n5. Hash\n6. Fake data\n7. Exit")
     choice=input("Choose option: ")
     if choice=="1":
         caesar_decrypt()
@@ -44,6 +47,8 @@ def menu():
     elif choice=="5":
         hash()
     elif choice=="6":
+        dummy_data()
+    elif choice=="7":
         exit()
     else:
         print("Invalid choice")
@@ -167,5 +172,40 @@ def hash():
     else:
         print("Invalid choice")
         return
-#hash() 
+
+def dummy_data():
+    fakeobj = Faker()
+    choice = input("1.Personal Data\n2.Company Data\n3. Exit\n")
+    if choice=="1":
+        print("Basic Info:")
+        print("Name:",fakeobj.name(),"\nDate of birth:",fakeobj.date_of_birth(),"\nAddress:",fakeobj.address(),"\nPhone number:",fakeobj.phone_number())
+        print("Dummy website and email:")
+        print("http://www."+fakeobj.domain_name())
+        print(fakeobj.email(),"\nCompany Email:",fakeobj.company_email())
+        print("Company Info:")
+        print("Company name:",fakeobj.company(),"\nCompany suffix:",fakeobj.company_suffix(),"\nCompany catch phrase:",fakeobj.catch_phrase())
+        print("Job Info:")
+        print("Job:",fakeobj.job(),"\nJob description:",fakeobj.job())
+        print("Bank Info:")
+        print("Bank name:",fakeobj.bank_name(),"\nBank account number:",fakeobj.iban())
+        print("Credit card Info:")
+        print("Credit card number:",fakeobj.credit_card_number(),"\nCredit card provider:",fakeobj.credit_card_provider())
+    elif choice=='2':
+        employees = {}
+        i=int(input("Number of fake employees: "))
+        for x in range(i):
+            employees[x]={}
+            employees[x]['Employee Id']= randint(1, i)
+            employees[x]['Name']= fakeobj.name()
+            employees[x]['Date of birth']= str(fakeobj.date_of_birth())
+            employees[x]['Address']= fakeobj.address()
+            employees[x]['Phone number']= fakeobj.phone_number()
+            employees[x]['Email']= fakeobj.email()
+            employees[x]['Company Email']= fakeobj.company_email()
+            employees[x]['Job description']= fakeobj.job()
+            employees[x]['Bank account number']= fakeobj.iban()
+
+        #Dump to json format:
+        with open('employees.json', 'w') as fp:
+            json.dump(employees, fp)
 menu()
